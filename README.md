@@ -1,230 +1,61 @@
-A production-ready cryptocurrency information app demonstrating modern Android development practices, clean architecture, and comprehensive testing strategies.
+# Crypto Info App
 
-🎯 Why This Project Stands Out
-This application demonstrates senior-level Android development skills through:
+An Android app for browsing cryptocurrency information, built with Kotlin and Jetpack Compose using Clean Architecture, MVVM and tests across every layer.
 
-Enterprise-grade architecture with proper separation of concerns
-Comprehensive testing strategy covering all application layers
-Modern Android stack with latest frameworks and best practices
-Production-ready code quality with proper error handling and performance optimization
+## Features
 
-📱 App Overview
-A cryptocurrency information app that fetches real-time data and displays detailed information about various cryptocurrencies. Features include:
+- Browse cryptocurrencies by market rank, with active/inactive status
+- Coin detail screen with description, tags and team members
+- Loading and error states for network requests
+- Material 3 UI built entirely in Jetpack Compose
 
-📊 Real-time cryptocurrency listings with market rankings and status
-🔍 Detailed coin information including descriptions, team members, and categorization
-🎨 Modern Material 3 UI with responsive design and dark theme
-⚡ Smooth navigation and loading states for optimal user experience
-🔄 Offline-first approach with proper error handling
+Data comes from the public [CoinPaprika API](https://api.coinpaprika.com/).
 
-🏗️ Technical Architecture
-Clean Architecture Implementation
-├── 🎨 Presentation Layer (UI)
-│   ├── ViewModels (MVVM Pattern)
-│   ├── Compose Screens & Components
-│   └── Navigation & State Management
-│
-├── 🧠 Domain Layer (Business Logic)
-│   ├── Use Cases (Single Responsibility)
-│   ├── Domain Models
-│   └── Repository Interfaces
-│
-└── 📊 Data Layer
-    ├── Repository Implementations
-    ├── Remote Data Sources (API)
-    └── DTOs & Mappers
-Key Design Patterns
+## Architecture
 
-MVVM: Reactive UI with ViewModel and StateFlow
-Repository Pattern: Data access abstraction
-Dependency Injection: Modular and testable architecture
-Observer Pattern: Reactive programming with Kotlin Flows
-Use Case Pattern: Encapsulated business logic
+The app follows Clean Architecture with three layers:
 
-🛠️ Technology Stack
-Core Technologies
+```
+presentation/   Compose screens, ViewModels (MVVM), navigation
+domain/         Use cases, domain models, repository interfaces
+data/           Retrofit API, DTOs, repository implementation
+```
 
-Kotlin - Modern, concise, null-safe programming
-Jetpack Compose - Declarative UI framework
-Coroutines & Flow - Asynchronous programming
-Dagger Hilt - Compile-time dependency injection
-Navigation Compose - Type-safe navigation
+- **MVVM:** ViewModels expose UI state to Compose screens
+- **Use cases:** `GetCoinsUseCase` and `GetCoinUseCase` hold the business logic and emit `Resource` states (Loading / Success / Error) via Kotlin Flow
+- **Repository pattern:** the domain layer depends on an interface, so the data source can be swapped for fakes in tests
+- **Dependency injection:** Hilt, with a separate test module for instrumented tests
 
-Networking & Data
+## Tech stack
 
-Retrofit - Type-safe HTTP client
-OkHttp - HTTP client with interceptors
-Gson - JSON serialization/deserialization
-CoinPaprika API - Real-time cryptocurrency data
+Kotlin · Jetpack Compose · Material 3 · Coroutines & Flow · Hilt (KSP) · Retrofit · OkHttp · Gson · Navigation Compose
 
-UI & Design
+## Testing
 
-Material 3 - Latest Material Design system
-Compose UI - Modern declarative UI toolkit
-Custom Themes - Dark/Light theme support
-Responsive Design - Adaptive layouts
+| Layer | What's tested | Tools |
+|---|---|---|
+| Domain | Use cases emit the correct Loading → Success / Error sequence | JUnit, MockK, `runTest` |
+| Presentation | ViewModels update state correctly from use-case results | JUnit, MockK, fake repository, `MainCoroutineRule` |
+| UI | Coin list and detail screens render the expected content | Compose UI testing, Hilt testing |
+| End-to-end | Full journey from list to detail screen against a mock server | Compose UI testing, MockWebServer |
 
-🧪 Testing Strategy
-Comprehensive Test Coverage
-This project demonstrates industry-standard testing practices that employers value:
-📝 Unit Tests
+## Running the project
 
-ViewModel Testing: MockK with coroutine test utilities
-Use Case Testing: Business logic validation with mocked dependencies
-Repository Testing: Data layer testing with fake implementations
+Requirements: Android Studio (recent version), JDK 17, Android SDK API 24+
 
-kotlin@Test
-fun `getCoins updates state with list of coins`() = runTest {
-    // Given
-    val mockCoins = listOf(/* test data */)
-    coEvery { getCoinsUseCase() } returns flow { emit(Resource.Success(mockCoins)) }
-    
-    // When
-    advanceUntilIdle()
-    
-    // Then
-    assert(viewModel.state.value.coins == mockCoins)
-}
-🔗 Integration Tests
+```bash
+git clone https://github.com/omarefaruk/CryptoInfoApp.git
+```
 
-Feature Testing: End-to-end feature workflows
-Repository Integration: Real ViewModels with fake repositories
-Navigation Testing: Screen transitions and data flow
+Open the project in Android Studio and run the `app` configuration.
 
-🎯 End-to-End Tests
+```bash
+./gradlew test                  # unit tests
+./gradlew connectedAndroidTest  # UI and end-to-end tests (needs an emulator or device)
+```
 
-Complete User Journeys: List → Detail navigation
-UI Automation: Compose testing framework
-Mock Server Setup: Reliable testing environment
+## What I'd add next
 
-kotlin@Test
-fun complete_app_navigation_flow() {
-    // Verify list screen loads
-    composeRule.onNodeWithText("Bitcoin").assertIsDisplayed()
-    
-    // Navigate to detail
-    composeRule.onNodeWithText("Bitcoin").performClick()
-    
-    // Verify detail screen content
-    composeRule.onNodeWithText("cryptocurrency").assertExists()
-}
-Test Infrastructure
-
-Custom Test Runners: Hilt testing modules
-MockWebServer: API testing infrastructure
-Fake Repositories: Isolated testing environments
-Coroutine Testing: Proper async testing patterns
-
-🚀 Professional Development Practices
-Code Quality
-
-✅ SOLID Principles implementation
-✅ Clean Code practices and naming conventions
-✅ Separation of Concerns across all layers
-✅ Error Handling with proper user feedback
-✅ Resource Management and memory optimization
-
-Project Organization
-
-✅ Feature-based package structure
-✅ Dependency Management with version catalogs
-✅ Build Configuration with Gradle KTS
-✅ Git Workflow with feature branches
-✅ Documentation and code comments
-
-Performance & Optimization
-
-✅ Efficient Networking with proper caching
-✅ Memory Management with lifecycle awareness
-✅ Build Optimization with KSP over KAPT
-✅ UI Performance with Compose best practices
-
-📦 Project Setup
-Prerequisites
-
-Android Studio Flamingo or newer
-JDK 17+
-Android SDK API 24+
-
-Installation
-bash# Clone the repository
-git clone https://github.com/yourusername/CryptoInfoApp.git
-
-# Open in Android Studio
-cd CryptoInfoApp
-# File -> Open -> Select project directory
-
-# Build and run
-./gradlew assembleDebug
-Running Tests
-bash# Run all unit tests
-./gradlew test
-
-# Run instrumentation tests
-./gradlew connectedAndroidTest
-
-# Generate test coverage report
-./gradlew jacocoTestReport
-📊 API Integration
-CoinPaprika API integration demonstrating:
-
-RESTful API consumption
-Proper error handling and retry mechanisms
-DTO to Domain model mapping
-Network security and performance optimization
-
-🎨 UI/UX Implementation
-
-Material 3 Design System with custom theming
-Responsive Layouts for different screen sizes
-Loading States and error handling UI
-Smooth Animations and transitions
-Accessibility considerations
-
-🔧 Build & Deployment
-
-Multi-module Architecture ready for scaling
-Build Variants for different environments
-ProGuard Configuration for release optimization
-CI/CD Ready structure for automated deployments
-
-📈 What This Demonstrates
-For Employers, This Project Shows:
-🎯 Senior Android Development Skills
-
-Modern Android development with latest frameworks
-Production-ready architecture patterns
-Comprehensive testing strategies
-
-💼 Professional Software Practices
-
-Clean code principles and SOLID design
-Proper Git workflow and project organization
-Documentation and maintainable code structure
-
-🚀 Technical Leadership Capabilities
-
-Ability to design scalable application architecture
-Knowledge of testing best practices
-Understanding of performance optimization
-
-⚡ Modern Technology Adoption
-
-Jetpack Compose expertise
-Kotlin coroutines and reactive programming
-Latest Android development tools and libraries
-
-📞 Contact & Collaboration
-I'm actively seeking opportunities to contribute to innovative Android projects. This repository demonstrates my commitment to:
-
-Quality Code: Clean, testable, maintainable implementations
-Modern Practices: Latest Android development standards
-Team Collaboration: Well-documented, scalable architecture
-Continuous Learning: Adoption of cutting-edge technologies
-
-
-💡 This project represents production-quality Android development that companies can confidently build upon. Every architectural decision, testing strategy, and implementation detail reflects industry best practices and scalable development approaches.
-📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-⭐ Star this repository if it demonstrates the kind of Android development quality you're looking for in your next team member!
+- Local caching with Room so the coin list is available offline
+- Expose ViewModel state as `StateFlow`
+- A CI workflow (GitHub Actions) to run the tests on every push
